@@ -91,7 +91,7 @@ References
 [3] http://www.vim.org/scripts/script.php?script_id=3114
 [4] http://en.wikipedia.org/wiki/Ctags
 [5] http://peterodding.com/code/vim/download.php?script=shell
-[6] http://www.vim.org/scripts/script.php?script_id=XXX
+[6] http://www.vim.org/scripts/script.php?script_id=3123
 [7] http://github.com/xolox/vim-shell
 [8] http://github.com/xolox/vim-shell/blob/master/dll/Makefile
 [9] http://en.wikipedia.org/wiki/MIT_License
