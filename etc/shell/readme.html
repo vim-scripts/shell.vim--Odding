@@ -59,12 +59,21 @@ instructions).</p>
 
 <p>I&#8217;d be very grateful if people would test the plug-in in different environments
 and report their results by contacting the <code>vim_dev</code> mailing-list or e-mailing
-me directly at <a href="&#109;&#x61;&#x69;&#108;t&#111;:&#112;&#x65;&#x74;&#x65;&#114;&#64;&#112;&#x65;&#116;er&#111;&#100;&#x64;&#105;&#110;&#103;&#46;&#x63;&#111;&#x6D;">&#112;&#x65;&#x74;&#x65;&#114;&#64;&#112;&#x65;&#116;er&#111;&#100;&#x64;&#105;&#110;&#103;&#46;&#x63;&#111;&#x6D;</a>. You can test the DLL by unpacking the
+me directly at <a href="&#x6D;&#x61;&#x69;&#108;&#x74;&#111;:&#112;&#x65;t&#x65;&#114;&#64;&#x70;&#101;&#116;&#x65;r&#x6F;&#100;&#x64;&#105;&#x6E;&#103;.c&#x6F;&#109;">&#112;&#x65;t&#x65;&#114;&#64;&#x70;&#101;&#116;&#x65;r&#x6F;&#100;&#x64;&#105;&#x6E;&#103;.c&#x6F;&#109;</a>. You can test the DLL by unpacking the
 <a href="http://peterodding.com/code/vim/download.php?script=shell">ZIP archive from www.vim.org</a> in the <code>%USERPROFILE%\vimfiles</code>
 directory (on Windows) or the <code>~/.vim/</code> directory (on UNIX), restarting Vim and
 testing the three functions as follows from inside Vim:</p>
 
 <ol>
+<li><p>In graphical Vim execute the following command:</p>
+
+<pre><code>:call xolox#shell#fullscreen()
+</code></pre>
+
+<p>Is Vim&#8217;s GUI window properly switched to full-screen mode? If so you can
+return to normal mode by calling the function again. If you&#8217;re stuck in
+full-screen Vim, save your existing buffers and press <code>Alt-F4</code>, that should
+always work.</p></li>
 <li><p>Execute the following command:</p>
 
 <pre><code>:call xolox#shell#openurl('http://www.vim.org/')
@@ -75,32 +84,38 @@ the environment variable <code>$DISPLAY</code> is empty the plug-in will switch 
 command-line browser.</p></li>
 <li><p>(Windows only) Execute the following command:</p>
 
-<pre><code>:call xolox#shell#execute('notepad')
+<pre><code>:call xolox#shell#execute('vimrun')
 </code></pre>
 
-<p>Does this start Notepad without blocking Vim&#8217;s window and without opening a
-command prompt window to run the command?</p></li>
-<li><p>In graphical Vim execute the following command:</p>
+<p>Immediately after executing this command Vim should respond to input again
+because <code>execute()</code> doesn&#8217;t wait for the external command to finish. Also no
+command prompt window should have been created, which means <code>vimrun.exe</code> is
+running completely invisible in the background. Please verify this: Open the
+Windows task manager by pressing <code>Control-Shift-Escape</code> and check that the
+process <code>vimrun.exe</code> is listed in the processes tab. If you don&#8217;t see the
+problem this is solving, try executing <code>vimrun.exe</code> using Vim&#8217;s built-in
+<code>system()</code> function instead:</p>
 
-<pre><code>:call xolox#shell#fullscreen()
+<pre><code>:call system('vimrun')
 </code></pre>
 
-<p>Is Vim&#8217;s GUI window properly switched to full-screen mode? If so you can
-return to normal mode by calling the function again. If you&#8217;re stuck in
-full-screen Vim, save your existing buffers and press <code>Alt-F4</code>, that should
-always work.</p></li>
+<p>Vim will be completely unresponsive until you &#8220;press any key to continue&#8221; in
+the command prompt window that&#8217;s running <code>vimrun.exe</code>. Now of course the
+<code>system()</code> function should only be used with non-interactive programs (the
+documentation says as much) but my point was to simulate an external command
+that takes a while to finish and blocks Vim while doing so.</p></li>
 </ol>
 
 <h2>Contact</h2>
 
 <p>If you have questions, bug reports, suggestions, etc. the author can be
-contacted at <a href="&#109;&#x61;&#x69;l&#x74;&#x6F;:&#112;&#101;&#x74;&#x65;&#x72;&#64;&#112;&#x65;&#116;&#101;&#114;o&#x64;&#x64;i&#110;&#103;&#x2E;&#99;&#x6F;&#x6D;">&#112;&#101;&#x74;&#x65;&#x72;&#64;&#112;&#x65;&#116;&#101;&#114;o&#x64;&#x64;i&#110;&#103;&#x2E;&#99;&#x6F;&#x6D;</a>. The latest version is available
+contacted at <a href="&#x6D;&#x61;i&#x6C;&#x74;&#111;:p&#101;&#116;&#x65;&#114;&#64;&#x70;&#x65;&#x74;&#101;r&#x6F;&#x64;&#100;&#105;&#110;&#103;&#46;&#x63;&#x6F;&#109;">p&#101;&#116;&#x65;&#114;&#64;&#x70;&#x65;&#x74;&#101;r&#x6F;&#x64;&#100;&#105;&#110;&#103;&#46;&#x63;&#x6F;&#109;</a>. The latest version is available
 at <a href="http://peterodding.com/code/vim/shell">http://peterodding.com/code/vim/shell</a> and <a href="http://github.com/xolox/vim-shell">http://github.com/xolox/vim-shell</a>.
 If you like the plug-in please vote for it on <a href="http://www.vim.org/scripts/script.php?script_id=3123">www.vim.org</a>.</p>
 
 <h2>License</h2>
 
 <p>This software is licensed under the <a href="http://en.wikipedia.org/wiki/MIT_License">MIT license</a>. <br />
-© 2010 Peter Odding &lt;<a href="&#109;&#x61;&#x69;&#x6C;&#x74;&#x6F;:&#112;&#101;&#116;&#x65;r&#64;&#x70;&#x65;t&#x65;&#x72;o&#100;&#x64;&#105;&#110;&#x67;.&#99;&#111;&#109;">&#112;&#101;&#116;&#x65;r&#64;&#x70;&#x65;t&#x65;&#x72;o&#100;&#x64;&#105;&#110;&#x67;.&#99;&#111;&#109;</a>&gt;.</p>
+© 2010 Peter Odding &lt;<a href="&#109;&#x61;&#105;&#108;&#x74;&#x6F;:&#x70;&#x65;&#x74;&#101;&#x72;&#64;&#112;&#x65;&#x74;&#101;&#114;&#111;&#x64;&#100;i&#x6E;&#x67;&#46;&#x63;&#x6F;m">&#x70;&#x65;&#x74;&#101;&#x72;&#64;&#112;&#x65;&#x74;&#101;&#114;&#111;&#x64;&#100;i&#x6E;&#x67;&#46;&#x63;&#x6F;m</a>&gt;.</p>
  </body>
 </html>
