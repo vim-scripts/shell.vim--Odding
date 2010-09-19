@@ -1,6 +1,6 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 17, 2010
+" Last Change: September 19, 2010
 " URL: http://peterodding.com/code/vim/shell/
 
 if !exists('s:script')
@@ -13,14 +13,14 @@ endif
 function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{1
   if a:arg !~ '\S'
     if !s:open_at_cursor()
-      call xolox#open#shell(expand('%:p:h'))
+      call xolox#open#file(expand('%:p:h'))
     endif
   elseif a:arg =~ g:shell_patt_url || a:arg =~ g:shell_patt_mail
     call xolox#open#url(a:arg)
   else
     let arg = fnamemodify(a:arg, ':p')
     if isdirectory(arg) || filereadable(arg)
-      call xolox#open#shell(arg)
+      call xolox#open#file(arg)
     else
       let msg = "%s: I don't know how to open %s!"
       echoerr printf(msg, s:script, string(a:arg))
@@ -40,6 +40,7 @@ function! s:open_at_cursor()
   endif
   if match != ''
     call xolox#open#url(match)
+    return 1
   else
     " As a last resort try to match a filename at the text cursor position.
     let line = getline('.')
@@ -48,11 +49,11 @@ function! s:open_at_cursor()
     let match .= matchstr(line[idx+1 : -1], '^\f*')
     " Expand leading tilde and/or environment variables in filename?
     if match =~ '^\~' || match =~ '\$'
-      " TODO This can return multiple files?!
-      let match = expand(match)
+      let match = split(expand(match), "\n")[0]
     endif
     if match != '' && (isdirectory(match) || filereadable(match))
-      call xolox#open#shell(match)
+      call xolox#open#file(match)
+      return 1
     endif
   endif
 endfunction

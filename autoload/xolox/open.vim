@@ -1,11 +1,11 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
 " Last Change: September 18, 2010
-" URL: http://peterodding.com/code/vim/open-external-location/
-" Version: 1.1
+" URL: http://peterodding.com/code/vim/open-associated-programs/
+" Version: 1.2
 
 " Support for automatic update using the GLVS plug-in.
-" GetLatestVimScripts: 3242 1 :AutoInstall: open-external-location.zip
+" GetLatestVimScripts: 3242 1 :AutoInstall: open-associated-programs.zip
 
 if !exists('s:script')
   let s:script = expand('<sfile>:p:~')
