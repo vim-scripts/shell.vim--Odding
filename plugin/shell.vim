@@ -1,6 +1,6 @@
 " Vim plug-in
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: June 18, 2011
+" Last Change: August 31, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
 " Support for automatic update using the GLVS plug-in.
@@ -11,31 +11,11 @@ if &cp || exists('g:loaded_shell')
   finish
 endif
 
-let g:shell_version = '0.9.7'
-
 " Configuration defaults. {{{1
 
 if !exists('g:shell_mappings_enabled')
   " Set this to false (0) if you don't like the default mappings.
   let g:shell_mappings_enabled = 1
-endif
-
-if !exists('g:shell_fullscreen_items')
-  " Change this if :Fullscreen shouldn't hide the menu/toolbar/tabline.
-  let g:shell_fullscreen_items = 'mTe'
-endif
-
-if !exists('g:shell_hl_exclude')
-  " URL highlighting breaks highlighting of <a href="..."> tags in HTML.
-  let g:shell_hl_exclude = '^\(x|ht\)ml$'
-endif
-
-if !exists('g:shell_patt_url')
- let g:shell_patt_url = '\<\w\{3,}://\(\S*\w\)\+[/?#]\?'
-endif
-
-if !exists('g:shell_patt_mail')
- let g:shell_patt_mail = '\<\w[^@ \t\r]*\w@\w[^@ \t\r]\+\w\>'
 endif
 
 " Automatic commands. {{{1
