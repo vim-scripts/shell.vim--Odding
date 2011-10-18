@@ -1,9 +1,9 @@
 " Vim auto-load script
 " Author: Peter Odding <peter@peterodding.com>
-" Last Change: September 26, 2011
+" Last Change: October 18, 2011
 " URL: http://peterodding.com/code/vim/shell/
 
-let g:xolox#shell#version = '0.9.13'
+let g:xolox#shell#version = '0.9.17'
 
 if !exists('s:fullscreen_enabled')
   let s:enoimpl = "%s() hasn't been implemented on your platform! %s"
@@ -16,13 +16,17 @@ function! xolox#shell#open_cmd(arg) " -- implementation of the :Open command {{{
   try
     if a:arg !~ '\S'
       if !s:open_at_cursor()
-        call xolox#misc#open#file(expand('%:p:h'))
+        let bufdir = expand('%:p:h')
+        call xolox#misc#msg#debug("shell.vim %s: Opening directory of current buffer '%s'.", g:xolox#shell#version, bufdir)
+        call xolox#misc#open#file(bufdir)
       endif
-    elseif a:arg =~ xolox#shell#url_pattern() || a:arg =~ xolox#shell#mail_pattern()
+    elseif (a:arg =~ xolox#shell#url_pattern()) || (a:arg =~ xolox#shell#mail_pattern())
+      call xolox#misc#msg#debug("shell.vim %s: Opening URL or e-mail address '%s'.", g:xolox#shell#version, a:arg)
       call xolox#misc#open#url(a:arg)
     else
       let arg = fnamemodify(a:arg, ':p')
       if isdirectory(arg) || filereadable(arg)
+        call xolox#misc#msg#debug("shell.vim %s: Opening valid filename '%s'.", g:xolox#shell#version, arg)
         call xolox#misc#open#file(arg)
       else
         let msg = "I don't know how to open '%s'! %s"
@@ -39,15 +43,21 @@ function! s:open_at_cursor()
   " Start by trying to match a URL in <cWORD> because URLs can be more-or-less
   " unambiguously distinguished from e-mail addresses and filenames.
   let match = matchstr(cWORD, xolox#shell#url_pattern())
-  if match == ''
+  if match != ''
+    call xolox#misc#msg#debug("shell.vim %s: Matched URL '%s' in cWORD '%s'.", g:xolox#shell#version, match, cWORD)
+  else
     " Now try to match an e-mail address in <cWORD> because most filenames
     " won't contain an @-sign while e-mail addresses require it.
     let match = matchstr(cWORD, xolox#shell#mail_pattern())
+    if match != ''
+      call xolox#misc#msg#debug("shell.vim %s: Matched e-mail address '%s' in cWORD '%s'.", g:xolox#shell#version, match, cWORD)
+    endif
   endif
   if match != ''
     call xolox#misc#open#url(match)
     return 1
   else
+    call xolox#misc#msg#debug("shell.vim %s: Trying to match filename in current line ..", g:xolox#shell#version)
     " As a last resort try to match a filename at the text cursor position.
     let line = getline('.')
     let idx = col('.') - 1
@@ -58,8 +68,11 @@ function! s:open_at_cursor()
       let match = split(expand(match), "\n")[0]
     endif
     if match != '' && (isdirectory(match) || filereadable(match))
+      call xolox#misc#msg#debug("shell.vim %s: Matched valid filename '%s' in current line ..", g:xolox#shell#version, match)
       call xolox#misc#open#file(match)
       return 1
+    elseif match != ''
+      call xolox#misc#msg#debug("shell.vim %s: File or directory '%s' doesn't exist.", g:xolox#shell#version, match)
     endif
   endif
 endfunction
@@ -109,6 +122,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
     if xolox#misc#os#is_win() && s:has_dll()
       let fn = 'execute_' . (a:synchronous ? '' : 'a') . 'synchronous'
       let cmd = &shell . ' ' . &shellcmdflag . ' ' . cmd
+      call xolox#misc#msg#debug("shell.vim %s: Executing %s using compiled DLL.", g:xolox#shell#version, cmd)
       let error = s:library_call(fn, cmd)
       if error != ''
         let msg = '%s(%s) failed! (error: %s)'
@@ -118,6 +132,7 @@ function! xolox#shell#execute(command, synchronous, ...) " -- execute external c
       if has('unix') && !a:synchronous
         let cmd = '(' . cmd . ') &'
       endif
+      call xolox#misc#msg#debug("shell.vim %s: Executing %s using system().", g:xolox#shell#version, cmd)
       call s:handle_error(cmd, system(cmd))
     endif
     if a:synchronous
@@ -238,7 +253,7 @@ function! xolox#shell#url_pattern() " -- get the preferred/default pattern to ma
 endfunction
 
 function! xolox#shell#mail_pattern() " -- get the preferred/default pattern to match e-mail addresses {{{1
-  return xolox#misc#option#get('shell_patt_mail', '\<\w\{3,}://\(\S*\w\)\+[/?#]\?')
+  return xolox#misc#option#get('shell_patt_mail', '\<\w[^@ \t\r]*\w@\w[^@ \t\r]\+\w\>')
 endfunction
 
 " Miscellaneous script-local functions. {{{1
